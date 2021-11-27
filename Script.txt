@@ -1,0 +1,135 @@
+	
+	-- Table: public.comentarios
+
+-- DROP TABLE public.comentarios;
+
+CREATE TABLE IF NOT EXISTS public.comentarios
+(
+    idcomentario integer NOT NULL DEFAULT nextval('comentarios_idcomentario_seq'::regclass),
+    comentario character varying(10000) COLLATE pg_catalog."default",
+    idpersona integer,
+    idnotapublicada integer,
+    fecha date,
+    hora time without time zone,
+    CONSTRAINT pk_idcomentario PRIMARY KEY (idcomentario),
+    CONSTRAINT fk_idnotapublicada FOREIGN KEY (idnotapublicada)
+        REFERENCES public.notas_publicadas (idnotapublicada) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION,
+    CONSTRAINT fk_idpersonacomentario FOREIGN KEY (idpersona)
+        REFERENCES public.persona (idpersona) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
+
+
+
+	
+	
+	-- Table: public.notas_publicadas
+
+-- DROP TABLE public.notas_publicadas;
+
+CREATE TABLE IF NOT EXISTS public.notas_publicadas
+(
+    idnotapublicada integer NOT NULL DEFAULT nextval('notas_publicadas_idnotapublicada_seq'::regclass),
+    notapublicada character varying(10000) COLLATE pg_catalog."default",
+    idpersona integer,
+    fecha date,
+    hora time without time zone,
+    CONSTRAINT pk_idnotapublicada PRIMARY KEY (idnotapublicada),
+    CONSTRAINT fk_idpersonanota FOREIGN KEY (idpersona)
+        REFERENCES public.persona (idpersona) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
+
+
+
+
+	
+	
+-- Table: public.persona
+
+-- DROP TABLE public.persona;
+
+CREATE TABLE IF NOT EXISTS public.persona
+(
+    idpersona integer NOT NULL D,
+    appaterno character varying(100) ,
+    apmaterno character varying(100) ,
+    nombre character varying(100) ,
+    direccion character varying(200) ,
+    fechaingreso date,
+    esexterno boolean,
+    contrasenia character varying ,
+    CONSTRAINT ididpersona PRIMARY KEY (idpersona)
+)
+
+
+	
+	
+-- Table: public.persona_rol
+
+-- DROP TABLE public.persona_rol;
+
+CREATE TABLE IF NOT EXISTS public.persona_rol
+(
+    idpersonarol integer NOT NULL DEFAULT nextval('persona_rol_idpersonarol_seq'::regclass),
+    idrol integer,
+    idpersona integer,
+    CONSTRAINT pk_idpersonarol PRIMARY KEY (idpersonarol),
+    CONSTRAINT fk_idpersona FOREIGN KEY (idpersona)
+        REFERENCES public.persona (idpersona) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION,
+    CONSTRAINT fk_idrol FOREIGN KEY (idrol)
+        REFERENCES public.roles (idrol) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
+
+
+	
+
+-- Table: public.respuestas
+
+-- DROP TABLE public.respuestas;
+
+CREATE TABLE IF NOT EXISTS public.respuestas
+(
+    idrespuesta integer NOT NULL DEFAULT nextval('respuestas_idrespuesta_seq'::regclass),
+    respuesta character varying(10000) COLLATE pg_catalog."default",
+    idpersona integer,
+    idcomentario integer,
+    idnotapublicada integer,
+    fecha date,
+    hora time without time zone,
+    CONSTRAINT pk_idrespuesta PRIMARY KEY (idrespuesta),
+    CONSTRAINT fk_idcomentario FOREIGN KEY (idcomentario)
+        REFERENCES public.comentarios (idcomentario) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION,
+    CONSTRAINT fk_idnotapublicada FOREIGN KEY (idnotapublicada)
+        REFERENCES public.notas_publicadas (idnotapublicada) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION,
+    CONSTRAINT fk_idpersonarespuesta FOREIGN KEY (idpersona)
+        REFERENCES public.persona (idpersona) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
+
+
+	
+	-- Table: public.roles
+
+-- DROP TABLE public.roles;
+
+CREATE TABLE IF NOT EXISTS public.roles
+(
+    idrol integer NOT NULL DEFAULT nextval('roles_idrol_seq'::regclass),
+    nombre_rol character varying(20) COLLATE pg_catalog."default",
+    CONSTRAINT idrol_pk PRIMARY KEY (idrol)
+)
+
